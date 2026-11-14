@@ -38,8 +38,11 @@ td.n{width:12%;text-align:center}td.v input{width:100%;border:0;font:inherit;tex
 <h1>RELATÓRIO DIÁRIO DE QUEIMA DE CAIXAS</h1><div class="sub">REGISTRO DE OPERAÇÃO</div>
 <div class="info">
 <div><b>Data:</b> <input id="dt" type="date"></div>
-<div><b>Horário:</b> <input id="t1" type="time"> às <input id="t2" type="time"></div>
-<div><b>Duração:</b> <span id="du">-</span></div>
+<div><b>Manhã - início:</b> <input id="mi" type="time"></div>
+<div><b>Manhã - fim:</b> <input id="mf" type="time"></div>
+<div><b>Tarde - início:</b> <input id="ti" type="time"></div>
+<div><b>Tarde - fim:</b> <input id="tf" type="time"></div>
+<div><b>Duração total:</b> <span id="du">-</span></div>
 <div><b>Registros:</b> <span id="rg">0 itens</span></div>
 <div><b>Atividade:</b> Queima de caixas</div>
 <div><b>Empresa:</b> MULL UMWELT</div>
@@ -52,29 +55,29 @@ td.n{width:12%;text-align:center}td.v input{width:100%;border:0;font:inherit;tex
 <div class="foot">Relatório elaborado para fins de controle e acompanhamento das atividades diárias de queima.</div>
 </div>
 <script>
-var K='rq-queima',S={d:'',a:'',b:'',items:[]},$=function(i){return document.getElementById(i)};
+var K='rq-queima',S={d:'',mi:'',mf:'',ti:'',tf:'',items:[]},$=function(i){return document.getElementById(i)};
 function today(){var x=new Date();return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2)}
 function fmt(n){return n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function num(s){s=String(s).trim().replace(/\s/g,'');if(s.indexOf(',')>-1)s=s.replace(/\./g,'').replace(',','.');var v=parseFloat(s);return isNaN(v)?null:v}
 function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
-function load(){try{var r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}if(!S.d)S.d=today()}
-function dur(){if(!S.a||!S.b)return'-';var p=S.a.split(':'),q=S.b.split(':'),m=(q[0]*60+ +q[1])-(p[0]*60+ +p[1]);if(m<0)m+=1440;return Math.floor(m/60)+'h'+('0'+m%60).slice(-2)+'min'}
+function load(){try{var r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}if(S.a&&!S.mi){S.mi=S.a;S.mf=S.b}delete S.a;delete S.b;if(!S.d)S.d=today()}
+function span(a,b){if(!a||!b)return 0;var p=a.split(':'),q=b.split(':'),m=(q[0]*60+ +q[1])-(p[0]*60+ +p[1]);if(m<0)m+=1440;return m}function dur(){var m=span(S.mi,S.mf)+span(S.ti,S.tf);return m?Math.floor(m/60)+'h'+('0'+m%60).slice(-2)+'min':'-'}
 function render(){
  var it=S.items,n=Math.ceil((it.length+1)/2),h='',i,t=0;
  for(i=0;i<it.length;i++)t+=it[i];
  for(i=0;i<Math.max(n,1);i++){h+='<tr>'+cell(i)+cell(i+n)+'</tr>'}
  $('tb').innerHTML=h;$('tt').textContent=fmt(t);$('rg').textContent=it.length+' itens';$('du').textContent=dur();
- $('dt').value=S.d;$('t1').value=S.a;$('t2').value=S.b;save()}
+ $('dt').value=S.d;$('mi').value=S.mi;$('mf').value=S.mf;$('ti').value=S.ti;$('tf').value=S.tf;save()}
 function cell(k){var L=S.items.length;if(k>L)return '<td class="n"></td><td class="v"></td>';var val=k<L?fmt(S.items[k]):'';return '<td class="n">'+('0'+(k+1)).slice(-2)+'</td><td class="v"><input data-k="'+k+'" type="text" autocomplete="off" placeholder="'+(k<L?'':'toque e digite')+'" value="'+val+'"></td>'}
 $('tb').addEventListener('change',function(e){var k=+e.target.dataset.k,v=num(e.target.value);if(v===null||e.target.value.trim()==='')S.items.splice(k,1);else S.items[k]=v;render();if(k>=S.items.length-1){var nx=document.querySelector('input[data-k="'+S.items.length+'"]');if(nx)nx.focus()}});
 function add(){var v=num($('nv').value);if(v===null)return;S.items.push(v);$('nv').value='';render();$('nv').focus()}
 $('tb').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();e.target.blur()}});
 $('add').onclick=add;$('nv').addEventListener('keydown',function(e){if(e.key==='Enter')add()});
-$('dt').onchange=function(){S.d=this.value;render()};$('t1').onchange=function(){S.a=this.value;render()};$('t2').onchange=function(){S.b=this.value;render()};
+$('dt').onchange=function(){S.d=this.value;render()};$('mi').onchange=function(){S.mi=this.value;render()};$('mf').onchange=function(){S.mf=this.value;render()};$('ti').onchange=function(){S.ti=this.value;render()};$('tf').onchange=function(){S.tf=this.value;render()};
 
 $('prt').onclick=function(){var fn='Relatorio_Queima_'+(S.d?S.d.split('-').reverse().join('-'):'')+'_MULL_UMWELT';
  if(window.AndroidBridge&&AndroidBridge.printPage){AndroidBridge.printPage(fn)}else{window.print()}};
 
-var armed=false;$('clr').onclick=function(){if(!armed){armed=true;this.textContent='Toque de novo';var b=this;setTimeout(function(){armed=false;b.textContent='Novo dia'},3000);return}armed=false;this.textContent='Novo dia';S={d:today(),a:'',b:'',items:[]};render()};
+var armed=false;$('clr').onclick=function(){if(!armed){armed=true;this.textContent='Toque de novo';var b=this;setTimeout(function(){armed=false;b.textContent='Novo dia'},3000);return}armed=false;this.textContent='Novo dia';S={d:today(),mi:'',mf:'',ti:'',tf:'',items:[]};render()};
 load();render();
 </script></body></html>
