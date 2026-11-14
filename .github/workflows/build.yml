@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Aplicar atualização do projeto
+        run: unzip -o QueimaMULL_login.zip
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -19,6 +22,14 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+
+      - name: Preparar chave de assinatura
+        env:
+          KS: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KS" ]; then echo "ERRO: falta o segredo KEYSTORE_BASE64"; exit 1; fi
+          echo "$KS" | base64 -d > app/queima.keystore
+          keytool -list -v -keystore app/queima.keystore -storepass QueimaMull2026 | grep SHA1
 
       - name: Build debug APK
         run: gradle assembleDebug --no-daemon
