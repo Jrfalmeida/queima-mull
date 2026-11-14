@@ -1,13 +1,3 @@
-plugins { id 'com.android.application' }
-
-android {
-    namespace 'br.com.mullumwelt.queimamull'
-    compileSdk 35
-    defaultConfig {
-        applicationId 'br.com.mullumwelt.queimamull'
-        minSdk 23
-        targetSdk 34
-        versionCode 1
-        versionName '1.0'
-    }
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
 }
