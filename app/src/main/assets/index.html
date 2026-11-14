@@ -24,6 +24,7 @@ td{border:1px solid var(--line);padding:0 8px;height:30px}
 td.n{width:12%;text-align:center}td.v input{width:100%;border:0;font:inherit;text-align:right;background:transparent;color:inherit;padding:6px 0}
 .total{margin-top:14px;border:1px solid var(--line);background:#eaf1ee;padding:12px;display:flex;justify-content:space-between;font-weight:bold}
 .total span:last-child{font-size:18px;color:var(--green)}
+.obs{margin-top:14px;border:1px solid var(--line);padding:10px 12px;font-size:12px;min-height:120px}.obs b{display:block;color:var(--green);margin-bottom:8px}.obs textarea{width:100%;min-height:85px;border:0;outline:0;resize:vertical;background:transparent;color:inherit;font:14px Arial,Helvetica,sans-serif;line-height:1.5}
 .sig{margin-top:14px;font-size:12px}.foot{text-align:center;font-size:11px;color:#667;margin-top:6px}
 @media (max-width:560px){.info{grid-template-columns:1fr 1fr}.paper{padding:12px;margin:8px}}
 @media print{.bar{display:none}body{background:#fff}.paper{box-shadow:none;margin:0;max-width:none;padding:0}@page{size:A4;margin:12mm}th,.total,.info{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -46,6 +47,7 @@ td.n{width:12%;text-align:center}td.v input{width:100%;border:0;font:inherit;tex
 <h2>RELAÇÃO DOS ITENS REGISTRADOS</h2>
 <table><thead><tr><th style="width:12%">Item</th><th>Peso</th><th style="width:12%">Item</th><th>Peso</th></tr></thead><tbody id="tb"></tbody></table>
 <div class="total"><span>TOTAL REGISTRADO</span><span id="tt">0,00</span></div>
+<div class="obs"><b>OBSERVAÇÕES</b><textarea id="obs" placeholder="Escreva aqui outras observações do dia..."></textarea></div>
 <div class="sig">Responsável: ____________________________ &nbsp; Assinatura: ____________________________</div>
 <div class="foot">Relatório elaborado para fins de controle e acompanhamento das atividades diárias de queima.</div>
 </div>
